@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias - FluxoConta</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/categorias.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>FluxoConta</h2>
+                <p>Controle financeiro pessoal</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="categorias.html" class="active"><i class="fas fa-tags"></i> Categorias</a></li>
+                    <li><a href="fluxo-caixa.html"><i class="fas fa-calendar-alt"></i> Fluxo de Caixa</a></li>
+                    <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                    <li><a href="importar.html"><i class="fas fa-file-import"></i> Importar</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>© 2026 FluxoConta</p>
+                <p style="font-size: 0.8rem; opacity: 0.5;">Versão 1.0.0</p>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <!-- O header será renderizado dinamicamente pelo JavaScript -->
+            </header>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="container">
+                    <!-- Ações -->
+                    <div class="actions-bar">
+                        <div class="filters">
+                            <select class="form-control" id="categoryTypeFilter">
+                                <option value="all">Todas as categorias</option>
+                                <option value="income">Entradas</option>
+                                <option value="expense">Saídas</option>
+                                <option value="credit">Cartão</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="btnAddCategory">
+                            <i class="fas fa-plus"></i> Nova Categoria
+                        </button>
+                    </div>
+                    
+                    <!-- Grid de Categorias -->
+                    <div class="categories-grid" id="categoriesGrid">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                    
+                    <div class="empty-state" id="emptyCategories" style="display: none;">
+                        <i class="fas fa-tags"></i>
+                        <h3>Nenhuma categoria encontrada</h3>
+                        <p>Crie sua primeira categoria para organizar suas transações</p>
+                        <button class="btn btn-primary" onclick="openCategoryModal()">
+                            Criar Categoria
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal de Categoria -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="categoryModalTitle">Nova Categoria</h3>
+                <button class="modal-close" onclick="closeCategoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="categoryName" 
+                               placeholder="Ex: Alimentação, Transporte..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-control" id="categoryType" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="income">Entrada</option>
+                            <option value="expense">Saída</option>
+                            <option value="credit">Cartão</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Cor</label>
+                        <input type="color" class="form-control" id="categoryColor" value="#3498db" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ícone (emoji)</label>
+                        <input type="text" class="form-control" id="categoryIcon" 
+                               placeholder="Ex: 🍔, 🚗, 💼" maxlength="2" required>
+                        <small class="form-text">Use emojis do seu teclado ou copie da internet</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Orçamento Mensal (R$)</label>
+                        <input type="number" class="form-control" id="categoryBudget" 
+                               placeholder="0,00" step="0.01" min="0">
+                        <small class="form-text">Deixe 0 para não definir limite</small>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeCategoryModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveCategory()">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Detalhes da Categoria -->
+    <div class="modal-overlay" id="categoryDetailsModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title" id="detailsModalTitle">Detalhes da Categoria</h3>
+                <button class="modal-close" onclick="closeDetailsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="category-header" id="categoryDetailsHeader">
+                    <!-- Preenchido via JS -->
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Total no mês</span>
+                        <span class="stat-value" id="categoryMonthTotal">R$ 0,00</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Orçamento</span>
+                        <span class="stat-value" id="categoryBudget">R$ 0,00</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">% do orçamento</span>
+                        <span class="stat-value" id="categoryPercentage">0%</span>
+                    </div>
+                </div>
+                
+                <div class="progress-bar large" id="categoryProgressBar">
+                    <div class="progress-bar-fill" id="categoryProgressFill" style="width: 0%"></div>
+                </div>
+                
+                <h4>Transações desta categoria</h4>
+                <div class="table-container">
+                    <table id="categoryTransactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoryTransactionsList">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="empty-state" id="emptyCategoryTransactions" style="display: none;">
+                    <i class="fas fa-receipt"></i>
+                    <p>Nenhuma transação nesta categoria</p>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeDetailsModal()">Fechar</button>
+                <button class="btn btn-primary" onclick="editCategoryFromDetails()">
+                    <i class="fas fa-edit"></i> Editar Categoria
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Exclusão</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir a categoria <strong id="deleteCategoryName"></strong>?</p>
+                <p style="font-size: 0.9rem; color: var(--danger);">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    As transações desta categoria serão movidas para "Sem categoria"
+                </p>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Excluir</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../components/header.js"></script>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script src="../scripts/categorias.js"></script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FluxoConta</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>FluxoConta</h2>
+                <p>Controle financeiro pessoal</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="categorias.html"><i class="fas fa-tags"></i> Categorias</a></li>
+                    <li><a href="fluxo-caixa.html"><i class="fas fa-calendar-alt"></i> Fluxo de Caixa</a></li>
+                    <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                    <li><a href="importar.html"><i class="fas fa-file-import"></i> Importar</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>© 2026 FluxoConta</p>
+                <p style="font-size: 0.8rem; opacity: 0.5;">Versão 1.0.0</p>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+           <header class="header">
+                <!-- O header será renderizado dinamicamente pelo JavaScript -->
+            </header>
+                
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="container">
+                    <!-- Cards de Resumo -->
+                    <div class="summary-cards grid grid-4">
+                        <div class="card summary-card income-card">
+                            <div class="card-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-label">Entradas</span>
+                                <span class="card-value" id="totalIncome">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card summary-card expense-card">
+                            <div class="card-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-label">Saídas</span>
+                                <span class="card-value" id="totalExpense">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card summary-card credit-card">
+                            <div class="card-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-label">Cartão</span>
+                                <span class="card-value" id="totalCredit">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card summary-card balance-card">
+                            <div class="card-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-label">Saldo</span>
+                                <span class="card-value" id="totalBalance">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ações Rápidas -->
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" id="btnAddTransaction">
+                            <i class="fas fa-plus"></i> Nova Transação
+                        </button>
+                    </div>
+                    
+                    <!-- Grid de Conteúdo -->
+                    <div class="dashboard-grid">
+                        <!-- Lista de Transações Recentes -->
+                        <div class="card recent-transactions">
+                            <div class="card-header">
+                                <h3 class="card-title">Transações Recentes</h3>
+                                <button class="btn btn-sm btn-outline" id="viewAllTransactions">
+                                    Ver todas
+                                </button>
+                            </div>
+                            
+                            <div class="table-container">
+                                <table id="transactionsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Categoria</th>
+                                            <th>Valor</th>
+                                            <th>Tipo</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactionsList">
+                                        <!-- Será preenchido via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="empty-state" id="emptyTransactions" style="display: none;">
+                                <i class="fas fa-receipt"></i>
+                                <h3>Nenhuma transação</h3>
+                                <p>Comece adicionando sua primeira transação</p>
+                                <button class="btn btn-primary" onclick="openTransactionModal()">
+                                    Adicionar Transação
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Gastos por Categoria no Cartão -->
+                        <div class="card credit-categories">
+                            <div class="card-header">
+                                <h3 class="card-title">Gastos no Cartão por Categoria</h3>
+                                <span class="badge badge-credit">Este mês</span>
+                            </div>
+                            
+                            <div class="categories-list" id="creditCategoriesList">
+                                <!-- Será preenchido via JavaScript -->
+                            </div>
+                            
+                            <div class="empty-state" id="emptyCreditCategories" style="display: none;">
+                                <i class="fas fa-credit-card"></i>
+                                <p>Nenhum gasto no cartão este mês</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal de Nova Transação -->
+    <div class="modal-overlay" id="transactionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Nova Transação</h3>
+                <button class="modal-close" onclick="closeTransactionModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-control" id="transactionType" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="income">Entrada (Receita)</option>
+                            <option value="expense">Saída (Despesa)</option>
+                            <option value="credit">Cartão de Crédito</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Data</label>
+                        <input type="date" class="form-control" id="transactionDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="transactionDescription" 
+                               placeholder="Ex: Salário, Aluguel, Compras..." required>
+                    </div>
+                    
+                    <div class="form-group" id="categoryGroup">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-control" id="transactionCategory" required>
+                            <option value="">Carregando categorias...</option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-outline" style="margin-top: 0.5rem;" 
+                                onclick="openCategoryModal()">
+                            <i class="fas fa-plus"></i> Nova Categoria
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Valor (R$)</label>
+                        <input type="number" class="form-control" id="transactionAmount" 
+                               placeholder="0,00" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div id="creditFields" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Cartão</label>
+                            <select class="form-control" id="transactionCard">
+                                <option value="">Selecione o cartão</option>
+                                <option value="Nubank">Nubank</option>
+                                <option value="PicPay">PicPay</option>
+                                <option value="Inter">Banco Inter</option>
+                                <option value="C6">C6 Bank</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Parcela Atual</label>
+                                <input type="number" class="form-control" id="transactionInstallment" 
+                                       placeholder="1" min="1" value="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Total de Parcelas</label>
+                                <input type="number" class="form-control" id="transactionTotalInstallments" 
+                                       placeholder="1" min="1" value="1">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeTransactionModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveTransaction()">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Nova Categoria -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Nova Categoria</h3>
+                <button class="modal-close" onclick="closeCategoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <div class="form-group">
+                        <label class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="categoryName" 
+                               placeholder="Ex: Alimentação, Transporte..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-control" id="categoryType" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="income">Entrada</option>
+                            <option value="expense">Saída</option>
+                            <option value="credit">Cartão</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Cor</label>
+                        <input type="color" class="form-control" id="categoryColor" value="#3498db" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ícone (emoji)</label>
+                        <input type="text" class="form-control" id="categoryIcon" 
+                               placeholder="Ex: 🍔, 🚗, 💼" maxlength="2" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Orçamento Mensal (R$) <small>(opcional)</small></label>
+                        <input type="number" class="form-control" id="categoryBudget" 
+                               placeholder="0,00" step="0.01" min="0">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeCategoryModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveCategory()">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Exclusão</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir esta transação?</p>
+                <p style="font-size: 0.9rem; color: var(--gray);">Esta ação não pode ser desfeita.</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Excluir</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../components/header.js"></script>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script src="../scripts/dashboard.js"></script>
+</body>
+</html>

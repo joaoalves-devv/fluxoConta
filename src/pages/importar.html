@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importar Dados - FluxoConta</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/importar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>FluxoConta</h2>
+                <p>Controle financeiro pessoal</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="categorias.html"><i class="fas fa-tags"></i> Categorias</a></li>
+                    <li><a href="fluxo-caixa.html"><i class="fas fa-calendar-alt"></i> Fluxo de Caixa</a></li>
+                    <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                    <li><a href="importar.html" class="active"><i class="fas fa-file-import"></i> Importar</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>© 2026 FluxoConta</p>
+                <p style="font-size: 0.8rem; opacity: 0.5;">Versão 1.0.0</p>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <!-- O header será renderizado dinamicamente pelo JavaScript -->
+            <!-- Mas precisamos do botão Modelo aqui também -->
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Importar Dados</h1>
+            </div>
+            
+            <div class="header-right">
+                <button class="btn btn-sm btn-outline" id="downloadTemplateBtn" title="Baixar modelo">
+                    <i class="fas fa-download"></i> Modelo
+                </button>
+                
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar">U</div>
+                    <div class="user-details">
+                        <span class="user-name">Usuário</span>
+                        <span class="user-email">usuario@email.com</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="container">
+                    <!-- Instruções -->
+                    <div class="instructions-card card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-info-circle"></i> 
+                                Como importar seus dados
+                            </h3>
+                        </div>
+                        <div class="instructions-content">
+                            <ol class="instructions-list">
+                                <li>
+                                    <strong>Baixe o modelo</strong> 
+                                    - Clique no botão "Modelo" para baixar um arquivo de exemplo
+                                </li>
+                                <li>
+                                    <strong>Preencha seus dados</strong> 
+                                    - Use Excel, Google Sheets ou editor de texto para preencher
+                                </li>
+                                <li>
+                                    <strong>Salve como CSV</strong> 
+                                    - Arquivo deve estar no formato CSV (separado por vírgulas)
+                                </li>
+                                <li>
+                                    <strong>Importe o arquivo</strong> 
+                                    - Arraste ou selecione o arquivo abaixo
+                                </li>
+                            </ol>
+                            
+                            <div class="supported-formats">
+                                <span class="format-badge"><i class="fas fa-file-csv"></i> CSV</span>
+                                <span class="format-badge"><i class="fas fa-file-excel"></i> XLSX</span>
+                                <span class="format-badge"><i class="fas fa-file-excel"></i> XLS</span>
+                                <span class="format-badge"><i class="fas fa-file"></i> ODS</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Área de Upload -->
+                    <div class="upload-card card" id="uploadArea">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h3>Arraste seu arquivo ou clique aqui</h3>
+                            <p>Suporta arquivos CSV, Excel (XLSX, XLS) e OpenDocument (ODS)</p>
+                            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.ods" style="display: none;">
+                            <button class="btn btn-primary" id="selectFileBtn">
+                                <i class="fas fa-folder-open"></i> Selecionar Arquivo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview dos Dados (inicialmente oculto) -->
+                    <div class="preview-card card" id="previewCard" style="display: none;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-eye"></i>
+                                Preview dos Dados
+                            </h3>
+                            <div class="preview-actions">
+                                <span class="file-info" id="fileInfo"></span>
+                                <button class="btn btn-sm btn-outline" id="clearPreviewBtn">
+                                    <i class="fas fa-times"></i> Limpar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Estatísticas do Arquivo -->
+                        <div class="file-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Total de linhas:</span>
+                                <span class="stat-value" id="totalRows">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Entradas:</span>
+                                <span class="stat-value income" id="previewIncome">R$ 0,00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Saídas:</span>
+                                <span class="stat-value expense" id="previewExpense">R$ 0,00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Cartão:</span>
+                                <span class="stat-value credit" id="previewCredit">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Tabela de Preview -->
+                        <div class="table-container">
+                            <table id="previewTable">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Descrição</th>
+                                        <th>Categoria</th>
+                                        <th>Tipo</th>
+                                        <th>Valor</th>
+                                        <th>Cartão</th>
+                                        <th>Parcelas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewList">
+                                    <!-- Preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Opções de Importação -->
+                        <div class="import-options">
+                            <div class="options-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="createCategories" checked>
+                                    <span>Criar categorias automaticamente</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="skipDuplicates" checked>
+                                    <span>Ignorar transações duplicadas</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="expandInstallments" checked>
+                                    <span>Expandir compras parceladas</span>
+                                </label>
+                            </div>
+                            
+                            <div class="options-actions">
+                                <button class="btn btn-success" id="confirmImportBtn">
+                                    <i class="fas fa-check"></i> Confirmar Importação
+                                </button>
+                                <button class="btn btn-outline" id="cancelImportBtn">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Histórico de Importações -->
+                    <div class="history-card card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-history"></i>
+                                Histórico de Importações
+                            </h3>
+                            <button class="btn btn-sm btn-outline" id="clearHistoryBtn">
+                                <i class="fas fa-trash"></i> Limpar Histórico
+                            </button>
+                        </div>
+                        
+                        <div class="history-list" id="historyList">
+                            <!-- Preenchido via JavaScript -->
+                        </div>
+                        
+                        <div class="empty-state" id="emptyHistory" style="display: none;">
+                            <i class="fas fa-file-import"></i>
+                            <p>Nenhuma importação realizada ainda</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal de Progresso -->
+    <div class="modal-overlay" id="progressModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Importando dados...</h3>
+            </div>
+            
+            <div class="modal-body">
+                <div class="progress-container">
+                    <div class="progress-bar-large" id="importProgressBar">
+                        <div class="progress-fill" id="importProgressFill" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text" id="importProgressText">Processando 0 de 0 linhas</p>
+                </div>
+                
+                <div class="import-status" id="importStatus">
+                    <p><i class="fas fa-spinner fa-spin"></i> Analisando arquivo...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    
+    <script src="../components/header.js"></script>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Bibliotecas para leitura de arquivos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="../scripts/importar.js"></script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+/* ===== DASHBOARD SPECIFIC STYLES ===== */
+
+/* Summary Cards */
+.summary-cards {
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-normal);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+}
+
+.summary-card:hover::before {
+    transform: translateX(100%);
+}
+
+.income-card {
+    background: linear-gradient(135deg, var(--income) 0%, var(--primary-dark) 100%);
+    color: white;
+}
+
+.expense-card {
+    background: linear-gradient(135deg, var(--expense) 0%, var(--danger-dark) 100%);
+    color: white;
+}
+
+.credit-card {
+    background: linear-gradient(135deg, var(--credit) 0%, var(--warning-dark) 100%);
+    color: white;
+}
+
+.balance-card {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    color: white;
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--border-radius-full);
+    background-color: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.card-info {
+    flex: 1;
+}
+
+.card-label {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.card-value {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    display: block;
+}
+
+/* Quick Actions */
+.quick-actions {
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: var(--spacing-xl);
+}
+
+/* Recent Transactions */
+.recent-transactions {
+    overflow: hidden;
+}
+
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.transaction-row {
+    transition: background-color var(--transition-fast);
+}
+
+.transaction-row:hover {
+    background-color: var(--lighter);
+}
+
+.transaction-type-badge {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.type-income {
+    background-color: var(--income-light);
+    color: var(--primary-dark);
+}
+
+.type-expense {
+    background-color: var(--expense-light);
+    color: var(--danger-dark);
+}
+
+.type-credit {
+    background-color: var(--credit-light);
+    color: var(--warning-dark);
+}
+
+.transaction-amount {
+    font-weight: 600;
+}
+
+.amount-income {
+    color: var(--income);
+}
+
+.amount-expense {
+    color: var(--expense);
+}
+
+.amount-credit {
+    color: var(--credit);
+}
+
+.transaction-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.transaction-actions button {
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+    color: var(--gray);
+}
+
+.transaction-actions button:hover {
+    background-color: var(--light);
+    color: var(--dark);
+}
+
+.transaction-actions .delete-btn:hover {
+    background-color: var(--danger-light);
+    color: var(--danger);
+}
+
+/* Credit Categories */
+.credit-categories {
+    height: fit-content;
+}
+
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    transition: background-color var(--transition-fast);
+}
+
+.category-item:hover {
+    background-color: var(--lighter);
+}
+
+.category-color {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--border-radius-full);
+}
+
+.category-icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.category-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.category-name {
+    font-weight: 500;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.category-amount {
+    font-size: var(--font-size-sm);
+    color: var(--credit);
+    font-weight: 600;
+}
+
+.category-percentage {
+    font-size: var(--font-size-xs);
+    color: var(--gray);
+}
+
+/* Modal Styles */
+#creditFields {
+    padding: var(--spacing-lg);
+    background-color: var(--credit-light);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-lg);
+    border-left: 4px solid var(--credit);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .card-value {
+        font-size: var(--font-size-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions {
+        justify-content: center;
+    }
+    
+    .btn-add {
+        width: 100%;
+    }
+}

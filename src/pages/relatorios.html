@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Relatórios - FluxoConta</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/relatorios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>FluxoConta</h2>
+                <p>Controle financeiro pessoal</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="categorias.html"><i class="fas fa-tags"></i> Categorias</a></li>
+                    <li><a href="fluxo-caixa.html"><i class="fas fa-calendar-alt"></i> Fluxo de Caixa</a></li>
+                    <li><a href="relatorios.html" class="active"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                    <li><a href="importar.html"><i class="fas fa-file-import"></i> Importar</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>© 2026 FluxoConta</p>
+                <p style="font-size: 0.8rem; opacity: 0.5;">Versão 1.0.0</p>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header será renderizado pelo header.js -->
+            <header class="header"></header>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="container">
+                    <!-- Filtros -->
+                    <div class="filters-bar">
+                        <div class="period-selector-wrapper">
+                            <label for="periodSelect" class="sr-only">Período</label>
+                            <select class="form-control period-select" id="periodSelect">
+                                <option value="month">Último mês</option>
+                                <option value="quarter">Último trimestre</option>
+                                <option value="semester">Último semestre</option>
+                                <option value="year">Último ano</option>
+                                <option value="custom">Personalizado</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-export" id="exportPdfBtn">
+                            <i class="fas fa-file-pdf"></i>
+                            <span class="btn-text" id="exportPdfBtn">Exportar PDF</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Filtro personalizado (inicialmente oculto) -->
+                    <div class="custom-period-card" id="customPeriodCard" style="display: none;">
+                        <div class="custom-period-fields">
+                            <div class="form-group">
+                                <label class="form-label">Data Inicial</label>
+                                <input type="date" class="form-control" id="startDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Data Final</label>
+                                <input type="date" class="form-control" id="endDate">
+                            </div>
+                            <button class="btn btn-primary" id="applyCustomPeriod">
+                                <i class="fas fa-check"></i> Aplicar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Cards de Resumo do Período -->
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-icon income">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-label">Entradas</span>
+                                <span class="summary-value" id="totalIncomePeriod">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <div class="summary-icon expense">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-label">Saídas</span>
+                                <span class="summary-value" id="totalExpensePeriod">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <div class="summary-icon credit">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-label">Cartão</span>
+                                <span class="summary-value" id="totalCreditPeriod">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <div class="summary-icon balance">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-label">Saldo</span>
+                                <span class="summary-value" id="balancePeriod">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gráficos -->
+                    <div class="charts-grid">
+                        <!-- Gráfico de Barras -->
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Comparativo Mensal</h3>
+                                <span class="badge badge-info">Entradas vs Saídas</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                            <div class="chart-footer" id="barChartPeriod">
+                                Jan/2026
+                            </div>
+                        </div>
+                        
+                        <!-- Gráfico de Pizza -->
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Gastos por Categoria</h3>
+                                <span class="badge badge-credit">Distribuição</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                            <div class="chart-footer" id="pieChartTotal">
+                                Total: R$ 0,00
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Top 5 Categorias -->
+                    <div class="top-categories-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Top 5 Categorias com Maiores Gastos</h3>
+                            <span class="badge badge-expense">Ranking</span>
+                        </div>
+                        
+                        <div class="top-categories-list" id="topCategoriesList">
+                            <!-- Preenchido via JavaScript -->
+                        </div>
+                        
+                        <div class="empty-state" id="emptyTopCategories" style="display: none;">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>Nenhum gasto no período</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Tabela Comparativa -->
+                    <div class="comparison-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Evolução Mensal</h3>
+                            <span class="badge badge-info">Comparativo</span>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mês</th>
+                                        <th>Entradas</th>
+                                        <th>Saídas</th>
+                                        <th>Cartão</th>
+                                        <th>Saldo</th>
+                                        <th>Variação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthlyComparisonList">
+                                    <!-- Preenchido via JavaScript -->
+                                </tbody>
+                                <tfoot id="monthlyComparisonTotal">
+                                    <!-- Preenchido via JavaScript -->
+                                </tfoot>
+                            </table>
+                        </div>
+                        
+                        <div class="empty-state" id="emptyMonthlyComparison" style="display: none;">
+                            <i class="fas fa-table"></i>
+                            <p>Nenhum dado disponível</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Estatísticas -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Média mensal</span>
+                                <span class="stat-value" id="avgMonthlyExpense">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Top categoria</span>
+                                <span class="stat-value" id="topSpendingCategory">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Maior entrada</span>
+                                <span class="stat-value" id="largestIncome">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Maior despesa</span>
+                                <span class="stat-value" id="largestExpense">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Bibliotecas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Scripts -->
+    <script src="../components/header.js"></script>
+    <script src="../scripts/relatorios.js"></script>
+</body>
+</html>

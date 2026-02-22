@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxo de Caixa - FluxoConta</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/fluxo-caixa.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>FluxoConta</h2>
+                <p>Controle financeiro pessoal</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="categorias.html"><i class="fas fa-tags"></i> Categorias</a></li>
+                    <li><a href="fluxo-caixa.html" class="active"><i class="fas fa-calendar-alt"></i> Fluxo de Caixa</a></li>
+                    <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                    <li><a href="importar.html"><i class="fas fa-file-import"></i> Importar</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>© 2026 FluxoConta</p>
+                <p style="font-size: 0.8rem; opacity: 0.5;">Versão 1.0.0</p>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+           <header class="header">
+                <!-- O header será renderizado dinamicamente pelo JavaScript -->
+            </header>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="container">
+                    <!-- Cards de Resumo Rápido -->
+                    <div class="quick-summary grid grid-3">
+                        <div class="card summary-card">
+                            <div class="summary-icon income">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-label">Entradas</span>
+                                <span class="summary-value" id="quickIncome">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card summary-card">
+                            <div class="summary-icon expense">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-label">Saídas</span>
+                                <span class="summary-value" id="quickExpense">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card summary-card">
+                            <div class="summary-icon balance">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-label">Saldo do Mês</span>
+                                <span class="summary-value" id="quickBalance">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Calendário -->
+                    <div class="card calendar-card">
+                        <div class="card-header">
+                            <div class="card-header-left">
+                                <h3 class="card-title">Calendário de Transações</h3>
+                            </div>
+                            <div class="calendar-legend">
+                                <span class="legend-item"><span class="legend-color income"></span> Entrada</span>
+                                <span class="legend-item"><span class="legend-color expense"></span> Saída</span>
+                                <span class="legend-item"><span class="legend-color credit"></span> Cartão</span>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-wrapper">
+                            <div class="calendar">
+                                <div class="calendar-header">
+                                    <div class="calendar-header-cell">Dom</div>
+                                    <div class="calendar-header-cell">Seg</div>
+                                    <div class="calendar-header-cell">Ter</div>
+                                    <div class="calendar-header-cell">Qua</div>
+                                    <div class="calendar-header-cell">Qui</div>
+                                    <div class="calendar-header-cell">Sex</div>
+                                    <div class="calendar-header-cell">Sáb</div>
+                                </div>
+                                <div class="calendar-grid" id="calendar-grid">
+                                    <!-- Preenchido via JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grid de Conteúdo -->
+                    <div class="fluxo-grid">
+                        <!-- Despesas do Mês -->
+                        <div class="card expenses-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Despesas do Mês</h3>
+                                <span class="badge badge-expense" id="expenseCount">0</span>
+                            </div>
+                            
+                            <div class="table-container">
+                                <table id="expensesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Categoria</th>
+                                            <th>Valor</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expensesList">
+                                        <!-- Preenchido via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="empty-state" id="emptyExpenses" style="display: none;">
+                                <i class="fas fa-receipt"></i>
+                                <p>Nenhuma despesa este mês</p>
+                            </div>
+                            
+                            <div class="card-footer">
+                                <strong>Total de Despesas:</strong>
+                                <span class="total-expense" id="totalExpenses">R$ 0,00</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Entradas do Mês -->
+                        <div class="card incomes-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Entradas do Mês</h3>
+                                <span class="badge badge-income" id="incomeCount">0</span>
+                            </div>
+                            
+                            <div class="table-container">
+                                <table id="incomesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Categoria</th>
+                                            <th>Valor</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="incomesList">
+                                        <!-- Preenchido via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="empty-state" id="emptyIncomes" style="display: none;">
+                                <i class="fas fa-money-bill"></i>
+                                <p>Nenhuma entrada este mês</p>
+                            </div>
+                            
+                            <div class="card-footer">
+                                <strong>Total de Entradas:</strong>
+                                <span class="total-income" id="totalIncomes">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Faturas por Cartão -->
+                    <div class="card credit-invoices">
+                        <div class="card-header">
+                            <h3 class="card-title">Faturas por Cartão</h3>
+                        </div>
+                        
+                        <div class="invoices-grid" id="invoicesGrid">
+                            <!-- Preenchido via JavaScript -->
+                        </div>
+                        
+                        <div class="empty-state" id="emptyInvoices" style="display: none;">
+                            <i class="fas fa-credit-card"></i>
+                            <p>Nenhuma fatura este mês</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal de Detalhes do Dia -->
+    <div class="modal-overlay" id="dayDetailsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="dayModalTitle">Transações do Dia</h3>
+                <button class="modal-close" onclick="closeDayModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="day-summary" id="daySummary">
+                    <!-- Preenchido via JS -->
+                </div>
+                
+                <div class="table-container">
+                    <table id="dayTransactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dayTransactionsList">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeDayModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+ 
+    
+    <script src="../components/header.js"></script>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script src="../scripts/fluxo-caixa.js"></script>
+</body>
+</html>
