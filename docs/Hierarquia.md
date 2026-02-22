@@ -1,7 +1,7 @@
 ```
 FLUXOCONTA/
 ├── index.html
-├── SRC/
+├── src/
 │   ├── pages/
 │   │   ├── dashboard.html
 │   │   ├── categorias.html
